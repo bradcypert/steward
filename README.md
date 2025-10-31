@@ -26,42 +26,110 @@ The best examples for how to use Steward are captured in the test folder. Eventu
 
 Using the Steward framework gives you the following (but not limited to) benefits:
 - A modular system with light Dependency Injection, Routing, and more.
-- Easy HTTP request/response management.
+- Easy HTTP request/response management with query params and JSON parsing.
 - Config parsing into the DI container at application boot.
 - Templating via the Mustache template specification.
+- Built-in security middleware (CORS, security headers, rate limiting).
+- Comprehensive request/response utilities.
+
+## Features
+
+### Core Features
+- ✅ **Routing**: Support for all HTTP verbs with path parameters
+- ✅ **Middleware**: Route-level and router-level middleware support
+- ✅ **Dependency Injection**: Lightweight DI container
+- ✅ **Static Files**: Built-in static file serving
+- ✅ **Templating**: Mustache template integration
+- ✅ **Forms**: Form validation abstraction
+- ✅ **Configuration**: YAML config file support
+
+### Request Utilities
+- ✅ **Query Parameters**: Easy access via `request.queryParams`
+- ✅ **JSON Parsing**: Built-in `request.json()` method
+- ✅ **Headers**: Simple header access
+- ✅ **Content Type Detection**: `isJson`, `isForm` helpers
+
+### Response Utilities
+- ✅ **Status Codes**: Named constructors for common HTTP status codes
+- ✅ **JSON Responses**: Easy JSON serialization
+- ✅ **Redirects**: Temporary and permanent redirects
+- ✅ **Templates**: Render Mustache templates
+
+### Security
+- ✅ **Security Headers**: Automatic security header injection
+- ✅ **CORS**: Cross-Origin Resource Sharing middleware
+- ✅ **Rate Limiting**: Configurable rate limiting per route or globally
+- ✅ **Request IDs**: Request tracking and correlation
+
+### CLI
+- ✅ **Project Generation**: `steward new <project>`
+- ✅ **Middleware Generation**: `steward new middleware <name>`
+- ✅ **View Generation**: `steward new view <name>`
+- ✅ **Project Validation**: `steward doctor`
 
 Here's an example of how you can use Steward!
 
 ```dart
 import 'package:steward/steward.dart';
+import 'package:steward/middlewares.dart';
 
 Future main() async {
   final router = Router();
-  final container = Container();
   
-  // Setup a DI binding for UserService
-  container.bind('UserService', (_) => UserService());
-  
-  // Replace the default DI container implementation
-  router.setContainer(container);
+  // Apply global middleware
+  router.use(SecurityHeadersMiddleware());
+  router.use(CorsMiddleware(
+    allowOrigin: ['https://yourdomain.com'],
+    allowMethods: ['GET', 'POST', 'PUT', 'DELETE'],
+  ));
   
   // Bare route handler example
-  router.get('/hello', (_) {
+  router.get('/hello', (Context context) {
     return Response.Ok('Hello World!');
   });
   
-  // Plucking things out of the container example
-  router.get('/config', (Context context) {
-    print(context.make('@config.app.name'));
-    return Response.Ok(context.make('@config.app.name'));
+  // Query parameters example
+  router.get('/search', (Context context) {
+    final query = context.request.queryParams['q'];
+    return Response.Ok('Searching for: $query');
   });
   
-  // Path Params example
-  router.get('/:name', (Context context) {
-    return Response.Ok(context.request.pathParams['name']);
+  // JSON body parsing example
+  router.post('/users', (Context context) async {
+    final body = await context.request.json();
+    final name = body['name'];
+    return Response.Created('User $name created');
   });
+  
+  // Path params example
+  router.get('/users/:id', (Context context) {
+    final id = context.request.pathParams['id'];
+    return Response.Ok('User ID: $id');
+  });
+  
+  // Rate limited endpoint
+  router.post('/api/login', loginHandler, middleware: [
+    RateLimitMiddleware(maxRequests: 5, window: Duration(minutes: 1))
+  ]);
   
   var app = App(router: router);
   return app.start();
 }
 ```
+
+## More Examples
+
+Check out the [example](example/) directory for more comprehensive examples:
+- [REST API Example](example/rest_api_example.dart) - Full REST API with all features
+
+## Documentation
+
+Full documentation is available at [pyrestudios.github.io/steward](https://pyrestudios.github.io/steward)
+
+### Key Documentation
+- [Security Best Practices](doc/site/docs/security/security-best-practices.md)
+- [Feature Analysis & Roadmap](FEATURE_ANALYSIS.md)
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for details on how to contribute to Steward.

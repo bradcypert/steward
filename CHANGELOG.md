@@ -4,6 +4,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+### Added
+- Comprehensive feature analysis document (FEATURE_ANALYSIS.md)
+- Request query parameter helpers (`queryParams`, `queryParamsAll`)
+- Request JSON body parsing methods (`json()`, `jsonList()`)
+- Request helper methods (`method`, `contentType`, `isJson`, `isForm`, `header()`, `headers()`)
+- New Response constructors: `NoContent()`, `Conflict()`, `UnprocessableEntity()`, `TooManyRequests()`, `BadGateway()`, `ServiceUnavailable()`
+- SecurityHeadersMiddleware for automatic security header injection
+- RateLimitMiddleware for request rate limiting
+- CompressionMiddleware for response compression (gzip/deflate)
+- RequestIdMiddleware for request tracking
+- GitHub issue templates (bug report, feature request, documentation)
+- GitHub pull request template
+- REST API example demonstrating all features
+- Security best practices documentation
+- Comprehensive test coverage for all new features
+
+### Documentation
+- Updated README with feature list and improved examples
+- Added security best practices guide
+- Added comprehensive REST API example
+
 ## [0.4.0] - 2023-10-22
 ### Added
 - Steward Context
