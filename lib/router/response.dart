@@ -87,11 +87,33 @@ class Response {
   Response.Boom([String? body])
       : this(HttpStatus.internalServerError, body: body);
 
+  /// Constructor for 204 no content responses.
+  Response.NoContent() : this(HttpStatus.noContent);
+
+  /// Constructor for 409 conflict responses.
+  Response.Conflict([String? body]) : this(HttpStatus.conflict, body: body);
+
+  /// Constructor for 422 unprocessable entity responses.
+  Response.UnprocessableEntity([String? body])
+      : this(HttpStatus.unprocessableEntity, body: body);
+
+  /// Constructor for 429 too many requests responses.
+  Response.TooManyRequests([String? body])
+      : this(HttpStatus.tooManyRequests, body: body);
+
+  /// Constructor for 502 bad gateway responses.
+  Response.BadGateway([String? body])
+      : this(HttpStatus.badGateway, body: body);
+
+  /// Constructor for 503 service unavailable responses.
+  Response.ServiceUnavailable([String? body])
+      : this(HttpStatus.serviceUnavailable, body: body);
+
   /// Constructor for 302 redirect responses.
   Response.Redirect(String location)
       : this(HttpStatus.temporaryRedirect, body: location);
 
-  /// Constructor for 303 redirect responses.
+  /// Constructor for 301 permanent redirect responses.
   Response.RedirectForever(String location)
       : this(HttpStatus.permanentRedirect, body: location);
 
