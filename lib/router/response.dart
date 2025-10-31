@@ -113,9 +113,9 @@ class Response {
   Response.Redirect(String location)
       : this(HttpStatus.temporaryRedirect, body: location);
 
-  /// Constructor for 301 permanent redirect responses.
+  /// Constructor for 308 permanent redirect responses.
   Response.RedirectForever(String location)
-      : this(HttpStatus.permanentRedirect, body: location);
+      : this(308, body: location); // HTTP 308 Permanent Redirect
 
   /// Render a template from a template string.
   /// Templates can be inlined or looked up from a template

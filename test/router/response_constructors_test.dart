@@ -44,10 +44,10 @@ void main() {
       expect(response.body, equals('Service down'));
     });
 
-    test('Response.RedirectForever should create 301 response', () {
+    test('Response.RedirectForever should create 308 response', () {
       final response = Response.RedirectForever('/new-location');
       
-      expect(response.statusCode, equals(308)); // HTTP 308 is permanent redirect
+      expect(response.statusCode, equals(308)); // HTTP 308 Permanent Redirect
       expect(response.body, equals('/new-location'));
     });
 

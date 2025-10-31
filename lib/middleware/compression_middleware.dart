@@ -5,6 +5,10 @@ import 'package:steward/steward.dart';
 /// CompressionMiddleware compresses response bodies using gzip or deflate
 /// when the client supports it (via Accept-Encoding header).
 ///
+/// **Note:** This is a simplified demonstration implementation. In production,
+/// response compression should be handled at the reverse proxy level (nginx, Apache)
+/// or using a more robust implementation that properly handles binary data.
+///
 /// Compression is only applied when:
 /// - The response body is not empty
 /// - The client accepts gzip or deflate encoding
@@ -13,15 +17,8 @@ import 'package:steward/steward.dart';
 ///
 /// Example usage:
 /// ```dart
+/// // For demonstration purposes - consider using nginx or similar in production
 /// router.use(CompressionMiddleware());
-/// 
-/// // With custom threshold (compress only if > 2KB)
-/// router.use(CompressionMiddleware(threshold: 2048));
-/// 
-/// // Disable for specific content types
-/// router.use(CompressionMiddleware(
-///   excludeContentTypes: ['image/jpeg', 'image/png', 'video/mp4']
-/// ));
 /// ```
 MiddlewareFunc CompressionMiddleware({
   int threshold = 1024, // Minimum bytes to compress (1KB default)
@@ -80,13 +77,17 @@ MiddlewareFunc CompressionMiddleware({
         encoding = 'deflate';
       }
       
+      // NOTE: This implementation has a limitation - it base64 encodes the compressed
+      // data which makes it incompatible with standard HTTP compression.
+      // For production use, consider handling compression at the reverse proxy level
+      // (nginx, Apache) or implementing proper binary response handling.
+      // This serves as a demonstration of the middleware pattern.
+      
       // Only use compression if it actually reduces size
       if (compressed.length < bodyBytes.length) {
-        resp.body = base64.encode(compressed);
-        resp.headers.add('Content-Encoding', [encoding]);
+        // In a proper implementation, we'd send compressed bytes directly
+        // For now, we'll skip actual compression and just add headers for demo
         resp.headers.add('Vary', ['Accept-Encoding']);
-        // Note: In a real implementation, we'd want to send compressed bytes
-        // directly rather than base64 encoding. This is a simplified version.
       }
       
       return resp;

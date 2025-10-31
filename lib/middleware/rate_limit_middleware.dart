@@ -68,6 +68,9 @@ MiddlewareFunc RateLimitMiddleware({
         return resp;
       }
       
+      // Calculate remaining before adding this request
+      final remaining = maxRequests - entry.count - 1;
+      
       // Add this request
       entry.addRequest();
       
@@ -76,8 +79,7 @@ MiddlewareFunc RateLimitMiddleware({
       
       // Add rate limit headers to response
       resp.headers.add('X-RateLimit-Limit', [maxRequests.toString()]);
-      resp.headers.add('X-RateLimit-Remaining', 
-          [(maxRequests - entry.count).toString()]);
+      resp.headers.add('X-RateLimit-Remaining', [remaining.toString()]);
       
       return resp;
     };

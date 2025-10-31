@@ -51,11 +51,9 @@ MiddlewareFunc RequestIdMiddleware({
         requestId = gen();
       }
 
-      // Store request ID in container for access during request handling
-      if (context is StewardContext) {
-        // Note: This requires the container to be mutable during request
-        // In a production implementation, we'd want a better way to handle this
-      }
+      // Note: Request ID storage in context would require a mutable context
+      // or binding through the DI container. For now, it's only available
+      // in the response headers for correlation.
 
       final resp = await next(context);
 
